@@ -1,7 +1,7 @@
 [app]
 
-title = Text Analyzer
-package.name = textanalyzer
+title = Analyzer
+package.name = analyzer
 package.domain = org.test
 
 source.dir = .
