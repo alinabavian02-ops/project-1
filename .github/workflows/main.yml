@@ -39,11 +39,11 @@ jobs:
 
     - name: Build APK
       run: |
-        cd "Text Analyzer"
+        cd "Analyzer"
         buildozer -v android debug
 
     - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
         name: text-analyzer-apk
-        path: Text Analyzer/bin/*.apk
+        path: Analyzer/bin/*.apk
