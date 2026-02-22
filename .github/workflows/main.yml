@@ -22,14 +22,6 @@ jobs:
             zip \
             unzip \
             openjdk-17-jdk \
-            autoconf \
-            libtool \
-            pkg-config \
-            zlib1g-dev \
-            libncurses5-dev \
-            libncursesw5-dev \
-            libtinfo5 \
-            cmake \
             libffi-dev \
             libssl-dev
 
@@ -40,11 +32,11 @@ jobs:
 
       - name: Build APK
         run: |
-          cd "Text analyzer"
+          cd "Text Analyzer"
           buildozer android debug
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
           name: apk-package
-          path: Text analyzer/bin/*.apk
+          path: Text Analyzer/bin/*.apk
