@@ -26,11 +26,34 @@ jobs:
           autoconf libtool pkg-config \
           zlib1g-dev libncurses5-dev \
           libffi-dev libssl-dev \
-          libtinfo6
+          libtinfo6 wget
 
-        # Fix libtinfo compatibility
         sudo ln -s /usr/lib/x86_64-linux-gnu/libtinfo.so.6 \
                    /usr/lib/x86_64-linux-gnu/libtinfo.so.5 || true
+
+    # ✅ Install Android SDK
+    - name: Install Android SDK
+      run: |
+        sudo mkdir -p /usr/local/lib/android/sdk
+        sudo chown -R $USER:$USER /usr/local/lib/android
+        cd /usr/local/lib/android
+        wget https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
+        unzip commandlinetools-linux-*.zip
+        mkdir -p sdk/cmdline-tools
+        mv cmdline-tools sdk/cmdline-tools/latest
+
+        export ANDROID_HOME=/usr/local/lib/android/sdk
+        export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$PATH
+
+        yes | sdkmanager --licenses
+        sdkmanager "platform-tools" "platforms;android-33" "build-tools;33.0.2"
+
+        # ✅ Install required NDK 25b
+        sdkmanager "ndk;25.2.9519653"
+
+        echo "ANDROID_HOME=$ANDROID_HOME" >> $GITHUB_ENV
+        echo "ANDROID_NDK_HOME=$ANDROID_HOME/ndk/25.2.9519653" >> $GITHUB_ENV
+        echo "PATH=$ANDROID_HOME/platform-tools:$ANDROID_HOME/cmdline-tools/latest/bin:$PATH" >> $GITHUB_ENV
 
     - name: Install Buildozer
       run: |
@@ -39,7 +62,8 @@ jobs:
 
     - name: Build APK
       run: |
-        cd "Analyzer"
+        cd Analyzer
+        buildozer android clean
         buildozer -v android debug
 
     - name: Upload APK
